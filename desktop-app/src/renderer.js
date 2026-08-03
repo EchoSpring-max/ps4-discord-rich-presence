@@ -160,10 +160,10 @@ function renderForms() {
   settingFields.onlineId.value = psn.onlineId || "";
   settingFields.npsso.value = "";
   settingFields.discordClientId.value = discord.clientId || "";
-  settingFields.defaultLargeImageKey.value = discord.largeImageKey || "playstation";
-  settingFields.defaultLargeImageText.value = discord.largeImageText || "PlayStation";
-  settingFields.defaultSmallImageKey.value = discord.smallImageKey || "";
-  settingFields.defaultSmallImageText.value = discord.smallImageText || "On PS4";
+  settingFields.defaultLargeImageKey.value = discord.largeImageKey ?? "playstation";
+  settingFields.defaultLargeImageText.value = discord.largeImageText ?? "";
+  settingFields.defaultSmallImageKey.value = discord.smallImageKey ?? "";
+  settingFields.defaultSmallImageText.value = discord.smallImageText ?? "";
   settingFields.discordAutoSync.value = String(discord.autoSync !== false);
   settingFields.discordPollInterval.value = Number(discord.pollIntervalMs || 15000);
   settingFields.lastSync.value = formatDate(psn.lastSyncAt);

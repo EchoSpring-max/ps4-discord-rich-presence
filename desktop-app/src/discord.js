@@ -48,7 +48,6 @@ class DiscordPresenceManager {
       details: presence.titleName,
       type: 0,
       startTimestamp: checkedAt,
-      largeImageText: settings.largeImageText || "PlayStation",
       buttons: [
         {
           label: "PlayStation",
@@ -61,9 +60,15 @@ class DiscordPresenceManager {
       activity.largeImageKey = settings.largeImageKey;
     }
 
+    if (settings.largeImageText) {
+      activity.largeImageText = settings.largeImageText;
+    }
+
     if (settings.smallImageKey) {
       activity.smallImageKey = settings.smallImageKey;
-      activity.smallImageText = settings.smallImageText || presence.platform || "PS4";
+      if (settings.smallImageText) {
+        activity.smallImageText = settings.smallImageText;
+      }
     }
 
     return activity;
