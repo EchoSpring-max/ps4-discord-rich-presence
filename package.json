@@ -1,0 +1,14 @@
+{
+  "name": "ps4-tracker-web",
+  "version": "1.0.0",
+  "description": "Railway-ready web app for tracking PS4 games and syncing PSN activity.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "psn-api": "^2.18.0"
+  }
+}
