@@ -119,6 +119,13 @@ button {
   padding: 16px;
   background: rgba(255, 207, 108, 0.08);
 }
+.quickstart {
+  margin-bottom: 18px;
+}
+.hint {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
 .toast {
   min-height: 1.25rem;
   margin-top: 16px;

@@ -23,8 +23,11 @@ This local helper reads the currently detected PSN game from your hosted tracker
    ```
 
 3. Your browser opens a local setup page automatically.
-4. Paste your Railway site URL, Discord application Client ID, and site password if you enabled one.
-5. Click `Save Setup`.
+4. In most cases, only enter:
+   - your `Discord application Client ID`
+   - your site password, if you enabled site protection
+5. Leave the default site URL and `admin` username unless you changed them yourself.
+6. Click `Save Setup`.
 
 ## Build a Windows EXE
 

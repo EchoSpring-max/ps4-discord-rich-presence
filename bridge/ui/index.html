@@ -25,6 +25,11 @@
         <section class="card">
           <p class="eyebrow">Connection</p>
           <h2>Easy Setup</h2>
+          <div class="callout quickstart">
+            Most setups only need 2 things:
+            `Discord Client ID` and your site password.
+            Your site URL is already filled in, and username usually stays `admin`.
+          </div>
           <form id="configForm" class="form-grid">
             <label class="full">
               <span>Tracker site URL</span>
@@ -39,11 +44,13 @@
             <label>
               <span>Site password</span>
               <input id="sitePassword" type="password" placeholder="Only if your site is protected" />
+              <small id="sitePasswordHint" class="hint"></small>
             </label>
 
             <label class="full">
               <span>Discord application Client ID</span>
               <input id="clientId" type="text" placeholder="123456789012345678" required />
+              <small class="hint">This comes from the Discord Developer Portal application you made for Rich Presence.</small>
             </label>
 
             <label>

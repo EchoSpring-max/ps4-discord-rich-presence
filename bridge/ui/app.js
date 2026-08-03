@@ -19,6 +19,7 @@ const statusEls = {
   lastSyncAt: document.getElementById("lastSyncAt"),
   lastError: document.getElementById("lastError"),
   uiUrl: document.getElementById("uiUrl"),
+  sitePasswordHint: document.getElementById("sitePasswordHint"),
   toast: document.getElementById("toast"),
 };
 
@@ -60,6 +61,9 @@ function render(payload) {
   fields.largeImageText.value = config.largeImageText || "";
   fields.smallImageKey.value = config.smallImageKey || "";
   fields.smallImageText.value = config.smallImageText || "";
+  statusEls.sitePasswordHint.textContent = config.hasSitePassword
+    ? "A site password is already saved. Leave the box blank to keep it."
+    : "If your Railway site has a password, paste it once here and the bridge will save it.";
 
   statusEls.rpcStatus.textContent = status.rpcConnected ? "Connected" : "Waiting";
   statusEls.trackerStatus.textContent = status.trackerReachable ? "Reachable" : "Not reached yet";
@@ -98,7 +102,7 @@ document.getElementById("configForm").addEventListener("submit", async (event) =
       body: JSON.stringify(readForm()),
     });
     render(payload);
-    showToast("Setup saved. The bridge restarted with your new settings.");
+    showToast("Setup saved. In most cases you're done now.");
   } catch (error) {
     showToast(error.message, true);
   }
