@@ -244,7 +244,8 @@ function buildPresence(state) {
 
   const checkedAt = presence.checkedAt ? new Date(presence.checkedAt) : new Date();
   const activity = {
-    details: `Playing ${presence.titleName}`,
+    name: presence.titleName,
+    details: presence.titleName,
     state: `${presence.platform || "PS4"} via PSN Tracker`,
     type: 0,
     timestamps: {
@@ -258,7 +259,10 @@ function buildPresence(state) {
     ],
   };
 
-  if (config.largeImageKey) {
+  if (presence.imageUrl) {
+    activity.largeImageUrl = presence.imageUrl;
+    activity.largeImageText = config.largeImageText || presence.titleName;
+  } else if (config.largeImageKey) {
     activity.largeImageKey = config.largeImageKey;
     activity.largeImageText = config.largeImageText || presence.titleName;
   }
