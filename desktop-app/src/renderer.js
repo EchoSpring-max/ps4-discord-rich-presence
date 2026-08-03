@@ -253,6 +253,11 @@ async function refresh() {
   render();
 }
 
+window.trackerApi.onStateUpdated((nextState) => {
+  state.data = nextState;
+  render();
+});
+
 elements.gameForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 

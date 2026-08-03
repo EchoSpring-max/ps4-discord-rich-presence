@@ -52,13 +52,23 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 }
 
+function broadcastState(state) {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    return;
+  }
+
+  mainWindow.webContents.send("tracker:state-updated", state);
+}
+
 function getState() {
   return store.getState();
 }
 
 function saveState(nextState) {
   store.setState(nextState);
-  return store.getState();
+  const state = store.getState();
+  broadcastState(state);
+  return state;
 }
 
 async function syncDiscordPresence(state = getState()) {
@@ -76,6 +86,16 @@ async function syncDiscordPresence(state = getState()) {
   });
 }
 
+async function detectAndSyncCurrentGame() {
+  const latest = getState();
+  if (!latest.settings.discord.autoSync || !latest.settings.psn.accessToken) {
+    return latest;
+  }
+
+  const detected = await psn.detectCurrentGame();
+  return syncDiscordPresence(detected.state);
+}
+
 function restartPolling() {
   if (pollTimer) {
     clearInterval(pollTimer);
@@ -85,15 +105,13 @@ function restartPolling() {
   const state = getState();
   const intervalMs = Math.max(5000, Number(state.settings.discord.pollIntervalMs || 15000));
 
-  pollTimer = setInterval(async () => {
-    const latest = getState();
-    if (!latest.settings.discord.autoSync || !latest.settings.psn.accessToken) {
-      return;
-    }
+  detectAndSyncCurrentGame().catch((_error) => {
+    // Ignore the first sync failure and keep background polling alive.
+  });
 
+  pollTimer = setInterval(async () => {
     try {
-      const detected = await psn.detectCurrentGame();
-      await syncDiscordPresence(detected.state);
+      await detectAndSyncCurrentGame();
     } catch (_error) {
       // Keep polling even if one check fails.
     }
