@@ -9,6 +9,7 @@ A Railway-ready Node web app for tracking your PS4 library, syncing your played 
 - Imports your recently played PS4 titles from PSN
 - Detects the PS4 game you are currently playing from PSN presence data
 - Supports background polling so the hosted app can keep checking without your PC staying on
+- Includes an optional local desktop bridge for Discord Rich Presence
 
 ## Local run
 
@@ -29,6 +30,37 @@ The app runs on `http://localhost:3000` by default.
 
 Railway will inject `PORT` automatically. The app already respects that variable.
 
+## Discord Rich Presence bridge
+
+Discord Rich Presence still has to be published from a machine running the Discord desktop app locally. This repo includes a lightweight bridge in `bridge/` that polls your hosted site and mirrors the detected PSN game into Discord Rich Presence.
+
+### Bridge setup
+
+1. Create a Discord application at [Discord Developer Portal](https://discord.com/developers/applications).
+2. Copy the application Client ID.
+3. Optional but recommended: add Rich Presence art assets in the Discord app settings.
+4. On the PC where Discord is installed, open the `bridge/` folder.
+5. Install dependencies:
+
+   ```powershell
+   pnpm install
+   ```
+
+6. Copy `.env.example` to `.env` and set:
+
+   ```powershell
+   SITE_URL=https://your-railway-site.up.railway.app
+   DISCORD_CLIENT_ID=your_discord_application_id
+   ```
+
+7. Start the bridge:
+
+   ```powershell
+   pnpm start
+   ```
+
+The bridge polls `/api/state` on your hosted site and updates Discord when the active PSN game changes.
+
 ## PSN setup
 
 1. Sign in to PlayStation in your browser.
@@ -36,8 +68,11 @@ Railway will inject `PORT` automatically. The app already respects that variable
 3. Copy the `npsso` value.
 4. Paste it into the hosted app when you press `Connect PSN`.
 
+If that page returns JSON, copy the value next to `"npsso"`. If it errors, make sure you are already signed into the same PlayStation account in that browser first.
+
 ## Notes
 
 - This app uses unofficial PSN API wrappers and should be treated as a personal-use tool.
 - The app does not ask for your PSN password directly.
-- For Discord, use Sony's official PlayStation and Discord account link so your real console activity is shared by PlayStation itself.
+- For the most reliable no-PC Discord display, use Sony's official PlayStation and Discord account link.
+- For custom Rich Presence text/images, use the local bridge in `bridge/`.
