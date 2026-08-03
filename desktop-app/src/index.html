@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PS4 Tracker Desktop</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <p class="eyebrow">Desktop Tracker</p>
+          <h1>PS4 Library</h1>
+          <p class="lede">One local app for PSN sync, current-game detection, and Discord Rich Presence.</p>
+        </div>
+
+        <label class="search">
+          <span>Search games</span>
+          <input id="searchInput" type="search" placeholder="Spider-Man, Persona, Yakuza..." />
+        </label>
+
+        <button id="newGameButton" class="ghost-button" type="button">+ New game</button>
+        <div id="gameList" class="game-list"></div>
+      </aside>
+
+      <main class="content">
+        <section class="hero">
+          <div>
+            <p class="eyebrow">Now Playing</p>
+            <h2 id="activeTitle">No PSN activity detected yet</h2>
+            <p id="activeMeta" class="hero-copy">Connect PSN, add your Discord Client ID, and the app can keep your presence in sync locally.</p>
+          </div>
+          <div class="hero-actions">
+            <button id="connectPsnButton" class="primary-button" type="button">Connect PSN</button>
+            <button id="syncPsnButton" class="secondary-button" type="button">Sync Library</button>
+            <button id="detectGameButton" class="secondary-button" type="button">Detect Current Game</button>
+            <button id="syncDiscordButton" class="secondary-button" type="button">Sync Discord</button>
+          </div>
+        </section>
+
+        <section class="panel-grid">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Game Details</p>
+                <h3>Library Entry</h3>
+              </div>
+              <button id="deleteButton" class="text-button" type="button">Delete</button>
+            </div>
+
+            <form id="gameForm" class="form-grid">
+              <input id="gameId" type="hidden" />
+              <input id="titleIdInput" type="hidden" />
+              <input id="sourceInput" type="hidden" />
+              <input id="imageUrlInput" type="hidden" />
+              <input id="playCountInput" type="hidden" />
+              <input id="playDurationInput" type="hidden" />
+              <input id="firstPlayedAtInput" type="hidden" />
+              <input id="lastPlayedAtInput" type="hidden" />
+
+              <label>
+                <span>Title</span>
+                <input id="titleInput" name="title" type="text" placeholder="Ghost of Tsushima" required />
+              </label>
+
+              <label>
+                <span>Platform</span>
+                <input id="platformInput" name="platform" type="text" value="PS4" />
+              </label>
+
+              <label>
+                <span>Status</span>
+                <select id="statusInput" name="status">
+                  <option>Backlog</option>
+                  <option>Playing</option>
+                  <option>Completed</option>
+                  <option>Paused</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Hours Played</span>
+                <input id="hoursInput" name="hoursPlayed" type="number" min="0" step="0.5" />
+              </label>
+
+              <label class="full-width">
+                <span>Tracker note</span>
+                <input id="presenceStateInput" name="presenceState" type="text" placeholder="Chapter 2, trophy cleanup, borrowed copy, etc." />
+              </label>
+
+              <label class="full-width">
+                <span>Notes</span>
+                <textarea id="notesInput" name="notes" rows="5" placeholder="Trophies, DLC, next mission, anything helpful..."></textarea>
+              </label>
+
+              <label>
+                <span>Large image key</span>
+                <input id="largeImageKeyInput" name="largeImageKey" type="text" placeholder="Optional per-game override" />
+              </label>
+
+              <label>
+                <span>Large image text</span>
+                <input id="largeImageTextInput" name="largeImageText" type="text" placeholder="Optional per-game override" />
+              </label>
+
+              <label>
+                <span>Small image key</span>
+                <input id="smallImageKeyInput" name="smallImageKey" type="text" placeholder="Optional per-game override" />
+              </label>
+
+              <label>
+                <span>Small image text</span>
+                <input id="smallImageTextInput" name="smallImageText" type="text" placeholder="Optional per-game override" />
+              </label>
+
+              <div class="form-actions full-width">
+                <button class="primary-button" type="submit">Save Game</button>
+                <button id="resetButton" class="secondary-button" type="button">Clear Form</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Connection</p>
+                <h3>PSN + Discord</h3>
+              </div>
+            </div>
+
+            <form id="settingsForm" class="form-grid">
+              <label class="full-width">
+                <span>PSN Online ID</span>
+                <input id="onlineIdInput" type="text" placeholder="Filled in after you connect" readonly />
+              </label>
+
+              <label class="full-width">
+                <span>NPSSO token</span>
+                <input id="npssoInput" type="password" placeholder="Paste a fresh NPSSO token from Sony when connecting" />
+              </label>
+
+              <label class="full-width">
+                <span>Discord application Client ID</span>
+                <input id="discordClientIdInput" type="text" placeholder="123456789012345678" />
+              </label>
+
+              <label>
+                <span>Large image key</span>
+                <input id="defaultLargeImageKeyInput" type="text" placeholder="playstation" />
+              </label>
+
+              <label>
+                <span>Large image text</span>
+                <input id="defaultLargeImageTextInput" type="text" placeholder="PlayStation" />
+              </label>
+
+              <label>
+                <span>Small image key</span>
+                <input id="defaultSmallImageKeyInput" type="text" placeholder="Optional" />
+              </label>
+
+              <label>
+                <span>Small image text</span>
+                <input id="defaultSmallImageTextInput" type="text" placeholder="On PS4" />
+              </label>
+
+              <label>
+                <span>Auto-sync Discord</span>
+                <select id="discordAutoSyncInput">
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Check every (ms)</span>
+                <input id="discordPollIntervalInput" type="number" min="5000" step="1000" value="15000" />
+              </label>
+
+              <label class="full-width">
+                <span>Last PSN library sync</span>
+                <input id="lastSyncInput" type="text" readonly />
+              </label>
+
+              <label class="full-width">
+                <span>Last presence check</span>
+                <input id="lastPresenceInput" type="text" readonly />
+              </label>
+
+              <label class="full-width">
+                <span>Last Discord Rich Presence sync</span>
+                <input id="lastDiscordSyncInput" type="text" readonly />
+              </label>
+
+              <div class="full-width callout">
+                <strong>Easy setup:</strong>
+                Most setups only need your NPSSO token once and your Discord Client ID once. After that the app keeps both locally and can keep syncing by itself.
+              </div>
+
+              <div class="full-width callout">
+                <strong>Discord note:</strong>
+                For the most reliable image, upload your PlayStation picture to your Discord application's Rich Presence assets with the key <code>playstation</code>.
+              </div>
+
+              <div class="form-actions full-width">
+                <button class="primary-button" type="submit">Save Settings</button>
+              </div>
+            </form>
+          </section>
+        </section>
+
+        <p id="toast" class="toast" aria-live="polite"></p>
+      </main>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>
