@@ -46,6 +46,7 @@ class DiscordPresenceManager {
     const activity = {
       name: presence.titleName,
       details: presence.titleName,
+      state: "On Ps4",
       type: 0,
       startTimestamp: checkedAt,
       buttons: [
