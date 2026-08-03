@@ -40,6 +40,7 @@ const gameFields = {
 const settingFields = {
   onlineId: document.getElementById("onlineIdInput"),
   npsso: document.getElementById("npssoInput"),
+  storedNpsso: document.getElementById("storedNpssoInput"),
   pollingEnabled: document.getElementById("pollingEnabledInput"),
   pollingInterval: document.getElementById("pollingIntervalInput"),
   lastSync: document.getElementById("lastSyncInput"),
@@ -164,6 +165,7 @@ function renderForms() {
   const psn = state.data?.settings?.psn || {};
   const polling = state.data?.settings?.polling || {};
   settingFields.onlineId.value = psn.onlineId || "";
+  settingFields.storedNpsso.value = psn.hasStoredNpsso ? "Stored on server" : "Not stored yet";
   settingFields.pollingEnabled.value = String(Boolean(polling.enabled));
   settingFields.pollingInterval.value = Number(polling.intervalMinutes || 5);
   settingFields.lastSync.value = formatDate(psn.lastSyncAt);

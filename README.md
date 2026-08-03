@@ -6,6 +6,7 @@ A Railway-ready Node web app for tracking your PS4 library, syncing your played 
 
 - Hosts a browser dashboard instead of an Electron desktop app
 - Stores PSN tokens and game library data on the server
+- Keeps the original NPSSO token server-side as a re-auth fallback when refresh tokens expire
 - Imports your recently played PS4 titles from PSN
 - Detects the PS4 game you are currently playing from PSN presence data
 - Supports background polling so the hosted app can keep checking without your PC staying on
@@ -74,6 +75,8 @@ The bridge polls `/api/state` on your hosted site and updates Discord when the a
 4. Paste it into the hosted app when you press `Connect PSN`.
 
 If that page returns JSON, copy the value next to `"npsso"`. If it errors, make sure you are already signed into the same PlayStation account in that browser first.
+
+After you connect once, the app now keeps the NPSSO token on the server volume and uses it as a fallback to re-authenticate automatically if the stored refresh token expires. The raw NPSSO token is not sent back to the browser API responses.
 
 ## Notes
 

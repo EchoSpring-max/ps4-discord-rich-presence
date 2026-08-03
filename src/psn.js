@@ -36,6 +36,7 @@ class PsnManager {
 
   buildAuthState(tokens, accountId, onlineId, previous = {}) {
     return {
+      npsso: previous.npsso || "",
       accountId: accountId || previous.accountId || "",
       onlineId: onlineId || previous.onlineId || "",
       accessToken: tokens.accessToken,
@@ -66,9 +67,38 @@ class PsnManager {
       ...current,
       settings: {
         ...current.settings,
-        psn: this.buildAuthState(tokens, accountId, profile?.onlineId || "", current.settings.psn),
+        psn: {
+          ...this.buildAuthState(tokens, accountId, profile?.onlineId || "", current.settings.psn),
+          npsso: npsso.trim(),
+        },
       },
     });
+  }
+
+  async exchangeStoredNpsso(psn, current) {
+    if (!psn.npsso) {
+      throw new Error("Your PlayStation session expired. Reconnect with a fresh NPSSO token.");
+    }
+
+    const accessCode = await exchangeNpssoForAccessCode(psn.npsso);
+    const tokens = await exchangeAccessCodeForAuthTokens(accessCode);
+    const payload = parseJwtPayload(tokens.idToken);
+    const accountId = payload.sub || payload.accountId || psn.accountId || "";
+    const nextState = this.saveState({
+      ...current,
+      settings: {
+        ...current.settings,
+        psn: {
+          ...this.buildAuthState(tokens, accountId, psn.onlineId, psn),
+          npsso: psn.npsso,
+        },
+      },
+    });
+
+    return {
+      accessToken: nextState.settings.psn.accessToken,
+      state: nextState,
+    };
   }
 
   async ensureAuthorization() {
@@ -87,24 +117,35 @@ class PsnManager {
     }
 
     if (!psn.refreshToken || isExpired(psn.refreshTokenExpiresAt)) {
-      throw new Error("Your PlayStation session expired. Reconnect with a fresh NPSSO token.");
+      return this.exchangeStoredNpsso(psn, current);
     }
 
-    const tokens = await exchangeRefreshTokenForAuthTokens(psn.refreshToken);
-    const payload = parseJwtPayload(tokens.idToken);
-    const accountId = payload.sub || payload.accountId || psn.accountId || "";
-    const nextState = this.saveState({
-      ...current,
-      settings: {
-        ...current.settings,
-        psn: this.buildAuthState(tokens, accountId, psn.onlineId, psn),
-      },
-    });
+    try {
+      const tokens = await exchangeRefreshTokenForAuthTokens(psn.refreshToken);
+      const payload = parseJwtPayload(tokens.idToken);
+      const accountId = payload.sub || payload.accountId || psn.accountId || "";
+      const nextState = this.saveState({
+        ...current,
+        settings: {
+          ...current.settings,
+          psn: {
+            ...this.buildAuthState(tokens, accountId, psn.onlineId, psn),
+            npsso: psn.npsso || "",
+          },
+        },
+      });
 
-    return {
-      accessToken: nextState.settings.psn.accessToken,
-      state: nextState,
-    };
+      return {
+        accessToken: nextState.settings.psn.accessToken,
+        state: nextState,
+      };
+    } catch (error) {
+      if (!psn.npsso) {
+        throw error;
+      }
+
+      return this.exchangeStoredNpsso(psn, current);
+    }
   }
 
   upsertGames(existingGames, incomingGames) {

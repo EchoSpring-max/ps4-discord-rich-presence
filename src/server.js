@@ -42,6 +42,28 @@ function saveState(nextState) {
   return store.setState(nextState);
 }
 
+function sanitizeState(state) {
+  return {
+    ...state,
+    settings: {
+      ...state.settings,
+      psn: {
+        accountId: state.settings.psn.accountId,
+        onlineId: state.settings.psn.onlineId,
+        connectedAt: state.settings.psn.connectedAt,
+        lastSyncAt: state.settings.psn.lastSyncAt,
+        lastPresenceCheckAt: state.settings.psn.lastPresenceCheckAt,
+        hasStoredNpsso: Boolean(state.settings.psn.npsso),
+        hasRefreshToken: Boolean(state.settings.psn.refreshToken),
+        hasAccessToken: Boolean(state.settings.psn.accessToken),
+      },
+      polling: {
+        ...state.settings.polling,
+      },
+    },
+  };
+}
+
 function parseBasicAuth(headerValue = "") {
   if (!headerValue.startsWith("Basic ")) {
     return null;
@@ -142,7 +164,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(process.cwd(), "public")));
 
 app.get("/api/state", (_req, res) => {
-  res.json(store.getState());
+  res.json(sanitizeState(store.getState()));
 });
 
 app.post("/api/games", (req, res) => {
@@ -167,10 +189,12 @@ app.post("/api/games", (req, res) => {
   }
 
   res.json(
-    saveState({
-      ...current,
-      games,
-    }),
+    sanitizeState(
+      saveState({
+        ...current,
+        games,
+      }),
+    ),
   );
 });
 
@@ -179,12 +203,14 @@ app.delete("/api/games/:gameId", (req, res) => {
   const gameId = req.params.gameId;
 
   res.json(
-    saveState({
-      ...current,
-      games: current.games.filter((item) => item.id !== gameId),
-      psnPresence:
-        current.psnPresence && `psn-${current.psnPresence.titleId}` === gameId ? null : current.psnPresence,
-    }),
+    sanitizeState(
+      saveState({
+        ...current,
+        games: current.games.filter((item) => item.id !== gameId),
+        psnPresence:
+          current.psnPresence && `psn-${current.psnPresence.titleId}` === gameId ? null : current.psnPresence,
+      }),
+    ),
   );
 });
 
@@ -207,14 +233,14 @@ app.post("/api/settings", (req, res) => {
     },
   });
   schedulePolling();
-  res.json(nextState);
+  res.json(sanitizeState(nextState));
 });
 
 app.post("/api/psn/connect", async (req, res) => {
   try {
     const nextState = await psn.connectWithNpsso((req.body && req.body.npsso) || "");
     schedulePolling();
-    res.json(nextState);
+    res.json(sanitizeState(nextState));
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -223,7 +249,10 @@ app.post("/api/psn/connect", async (req, res) => {
 app.post("/api/psn/sync", async (_req, res) => {
   try {
     const result = await psn.syncLibrary();
-    res.json(result);
+    res.json({
+      ...result,
+      state: sanitizeState(result.state),
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -232,7 +261,10 @@ app.post("/api/psn/sync", async (_req, res) => {
 app.post("/api/psn/detect", async (_req, res) => {
   try {
     const result = await psn.detectCurrentGame();
-    res.json(result);
+    res.json({
+      ...result,
+      state: sanitizeState(result.state),
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

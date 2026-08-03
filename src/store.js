@@ -4,6 +4,7 @@ const path = require("path");
 const defaultState = {
   settings: {
     psn: {
+      npsso: "",
       accountId: "",
       onlineId: "",
       accessToken: "",
