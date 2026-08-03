@@ -29,6 +29,8 @@ This local helper reads the currently detected PSN game from your hosted tracker
 5. Leave the default site URL and `admin` username unless you changed them yourself.
 6. Click `Save Setup`.
 
+For the most reliable image, upload your PlayStation picture to your Discord application's Rich Presence assets with the key `playstation`. The bridge now defaults to that key.
+
 ## Build a Windows EXE
 
 1. Install dependencies:

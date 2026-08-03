@@ -17,8 +17,8 @@ const DEFAULT_CONFIG = {
   pollIntervalMs: 15000,
   siteUsername: "admin",
   sitePassword: "",
-  largeImageKey: "",
-  largeImageText: "PS4 Tracker",
+  largeImageKey: "playstation",
+  largeImageText: "PlayStation",
   smallImageKey: "",
   smallImageText: "On PS4",
   autoOpenUi: true,
@@ -259,11 +259,11 @@ function buildPresence(state) {
     ],
   };
 
-  if (presence.imageUrl) {
-    activity.largeImageUrl = presence.imageUrl;
-    activity.largeImageText = config.largeImageText || presence.titleName;
-  } else if (config.largeImageKey) {
+  if (config.largeImageKey) {
     activity.largeImageKey = config.largeImageKey;
+    activity.largeImageText = config.largeImageText || presence.titleName;
+  } else if (presence.imageUrl) {
+    activity.largeImageUrl = presence.imageUrl;
     activity.largeImageText = config.largeImageText || presence.titleName;
   }
 
