@@ -126,13 +126,19 @@ function loadConfig() {
 
 function saveConfig(nextConfig) {
   const filePath = resolveConfigPath();
+  const existingConfig = runtime.config || cloneDefaultConfig();
+  const incomingPassword =
+    typeof nextConfig.sitePassword === "string" ? nextConfig.sitePassword : existingConfig.sitePassword;
+  const preservedPassword =
+    incomingPassword === "" ? existingConfig.sitePassword || "" : String(incomingPassword);
   const normalized = {
     ...cloneDefaultConfig(),
+    ...existingConfig,
     ...nextConfig,
     siteUrl: String(nextConfig.siteUrl || cloneDefaultConfig().siteUrl).replace(/\/+$/, ""),
     clientId: String(nextConfig.clientId || "").trim(),
     siteUsername: String(nextConfig.siteUsername || "admin").trim() || "admin",
-    sitePassword: String(nextConfig.sitePassword || ""),
+    sitePassword: preservedPassword,
     pollIntervalMs: Math.max(5000, Number(nextConfig.pollIntervalMs || 15000)),
     largeImageKey: String(nextConfig.largeImageKey || "").trim(),
     largeImageText: String(nextConfig.largeImageText || "PS4 Tracker").trim() || "PS4 Tracker",
