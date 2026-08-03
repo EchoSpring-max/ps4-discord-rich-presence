@@ -19,7 +19,8 @@ This local helper reads the currently detected PSN game from your hosted tracker
 2. Copy `.env.example` to `.env`.
 3. Set `SITE_URL` to your deployed Railway app URL.
 4. Set `DISCORD_CLIENT_ID` to your Discord app's Client ID.
-5. Start the bridge:
+5. If the site is password protected, also set `SITE_USERNAME` and `SITE_PASSWORD`.
+6. Start the bridge:
 
    ```powershell
    pnpm start
@@ -51,5 +52,6 @@ This local helper reads the currently detected PSN game from your hosted tracker
 
 - Polls your hosted site every `POLL_INTERVAL_MS` milliseconds
 - Reads `/api/state`
+- Supports HTTP Basic Auth when `SITE_PASSWORD` is set
 - If a PSN game is active, updates Discord Rich Presence
 - If no game is active, clears the Rich Presence

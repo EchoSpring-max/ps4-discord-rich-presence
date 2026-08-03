@@ -26,9 +26,12 @@ The app runs on `http://localhost:3000` by default.
 2. Create a new Railway project from that repo.
 3. Set a persistent volume and mount it to `/app/data` or another path.
 4. Set `DATA_DIR=/app/data` in Railway variables.
-5. Deploy.
+5. Optional but recommended: set `SITE_USERNAME=admin` and choose a strong `SITE_PASSWORD`.
+6. Deploy.
 
 Railway will inject `PORT` automatically. The app already respects that variable.
+
+When `SITE_PASSWORD` is set, the whole site and API are protected with HTTP Basic Auth. The health endpoint at `/health` stays open for uptime checks.
 
 ## Discord Rich Presence bridge
 
@@ -51,6 +54,8 @@ Discord Rich Presence still has to be published from a machine running the Disco
    ```powershell
    SITE_URL=https://your-railway-site.up.railway.app
    DISCORD_CLIENT_ID=your_discord_application_id
+   SITE_USERNAME=admin
+   SITE_PASSWORD=your_site_password
    ```
 
 7. Start the bridge:

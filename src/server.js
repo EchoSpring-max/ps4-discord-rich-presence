@@ -7,6 +7,8 @@ const { Store } = require("./store");
 const app = express();
 const port = Number(process.env.PORT || 3000);
 const dataDir = process.env.DATA_DIR || path.join(process.cwd(), "data");
+const siteUsername = (process.env.SITE_USERNAME || "admin").trim();
+const sitePassword = (process.env.SITE_PASSWORD || "").trim();
 const store = new Store(path.join(dataDir, "tracker-data.json"));
 store.load();
 
@@ -38,6 +40,48 @@ function normalizeGame(input = {}) {
 
 function saveState(nextState) {
   return store.setState(nextState);
+}
+
+function parseBasicAuth(headerValue = "") {
+  if (!headerValue.startsWith("Basic ")) {
+    return null;
+  }
+
+  try {
+    const decoded = Buffer.from(headerValue.slice(6), "base64").toString("utf8");
+    const separatorIndex = decoded.indexOf(":");
+    if (separatorIndex < 0) {
+      return null;
+    }
+
+    return {
+      username: decoded.slice(0, separatorIndex),
+      password: decoded.slice(separatorIndex + 1),
+    };
+  } catch (_error) {
+    return null;
+  }
+}
+
+function requireSiteAuth(req, res, next) {
+  if (!sitePassword) {
+    next();
+    return;
+  }
+
+  const credentials = parseBasicAuth(req.headers.authorization || "");
+  const authorized =
+    credentials &&
+    credentials.username === siteUsername &&
+    credentials.password === sitePassword;
+
+  if (authorized) {
+    next();
+    return;
+  }
+
+  res.set("WWW-Authenticate", 'Basic realm="PS4 Tracker"');
+  res.status(401).send("Authentication required.");
 }
 
 function schedulePolling() {
@@ -87,6 +131,14 @@ function schedulePolling() {
 }
 
 app.use(express.json({ limit: "1mb" }));
+app.use((req, res, next) => {
+  if (req.path === "/health") {
+    next();
+    return;
+  }
+
+  requireSiteAuth(req, res, next);
+});
 app.use(express.static(path.join(process.cwd(), "public")));
 
 app.get("/api/state", (_req, res) => {

@@ -19,6 +19,8 @@ const config = {
   siteUrl: (process.env.SITE_URL || "").replace(/\/+$/, ""),
   clientId: (process.env.DISCORD_CLIENT_ID || "").trim(),
   pollIntervalMs: Math.max(5000, Number(process.env.POLL_INTERVAL_MS || 15000)),
+  siteUsername: (process.env.SITE_USERNAME || "admin").trim(),
+  sitePassword: (process.env.SITE_PASSWORD || "").trim(),
   largeImageKey: (process.env.LARGE_IMAGE_KEY || "").trim(),
   largeImageText: (process.env.LARGE_IMAGE_TEXT || "PS4 Tracker").trim(),
   smallImageKey: (process.env.SMALL_IMAGE_KEY || "").trim(),
@@ -60,7 +62,12 @@ async function ensureConnected() {
 }
 
 async function fetchState() {
-  const response = await fetch(`${config.siteUrl}/api/state`);
+  const headers = {};
+  if (config.sitePassword) {
+    headers.Authorization = `Basic ${Buffer.from(`${config.siteUsername}:${config.sitePassword}`).toString("base64")}`;
+  }
+
+  const response = await fetch(`${config.siteUrl}/api/state`, { headers });
   if (!response.ok) {
     throw new Error(`Tracker site returned ${response.status}.`);
   }
