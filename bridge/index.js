@@ -1,5 +1,18 @@
-require("dotenv").config();
+const path = require("path");
+const fs = require("fs");
 
+const envCandidates = [
+  path.join(process.cwd(), ".env"),
+  path.join(path.dirname(process.execPath), ".env"),
+  path.join(__dirname, ".env"),
+];
+
+for (const envPath of envCandidates) {
+  if (fs.existsSync(envPath)) {
+    require("dotenv").config({ path: envPath });
+    break;
+  }
+}
 const { Client } = require("@xhayper/discord-rpc");
 
 const config = {

@@ -4,11 +4,24 @@
   "private": true,
   "description": "Local Discord Rich Presence bridge for the PS4 Tracker Railway site.",
   "main": "index.js",
+  "bin": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "build:win": "pkg . --targets node18-win-x64 --output dist/ps4-discord-bridge.exe"
   },
   "dependencies": {
     "@xhayper/discord-rpc": "^1.3.4",
     "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  },
+  "pkg": {
+    "scripts": [
+      "index.js"
+    ],
+    "assets": [
+      ".env.example"
+    ]
   }
 }

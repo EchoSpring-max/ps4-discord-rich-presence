@@ -3,3 +3,5 @@ data/
 .DS_Store
 npm-debug.log*
 pnpm-debug.log*
+bridge/.env
+bridge/dist/

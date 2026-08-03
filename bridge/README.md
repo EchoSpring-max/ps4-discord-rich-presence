@@ -25,6 +25,28 @@ This local helper reads the currently detected PSN game from your hosted tracker
    pnpm start
    ```
 
+## Build a Windows EXE
+
+1. Install dependencies:
+
+   ```powershell
+   pnpm install
+   ```
+
+2. Build the executable:
+
+   ```powershell
+   pnpm build:win
+   ```
+
+3. The output will be:
+
+   ```text
+   bridge/dist/ps4-discord-bridge.exe
+   ```
+
+4. Put a `.env` file in the same folder as the `.exe`.
+
 ## Behavior
 
 - Polls your hosted site every `POLL_INTERVAL_MS` milliseconds
