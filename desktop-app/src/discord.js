@@ -46,7 +46,6 @@ class DiscordPresenceManager {
     const activity = {
       name: presence.titleName,
       details: presence.titleName,
-      state: `${presence.platform || "PS4"} via PSN Tracker`,
       type: 0,
       startTimestamp: checkedAt,
       largeImageText: settings.largeImageText || "PlayStation",
