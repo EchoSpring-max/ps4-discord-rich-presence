@@ -16,15 +16,15 @@ This local helper reads the currently detected PSN game from your hosted tracker
    pnpm install
    ```
 
-2. Copy `.env.example` to `.env`.
-3. Set `SITE_URL` to your deployed Railway app URL.
-4. Set `DISCORD_CLIENT_ID` to your Discord app's Client ID.
-5. If the site is password protected, also set `SITE_USERNAME` and `SITE_PASSWORD`.
-6. Start the bridge:
+2. Start the bridge:
 
    ```powershell
    pnpm start
    ```
+
+3. Your browser opens a local setup page automatically.
+4. Paste your Railway site URL, Discord application Client ID, and site password if you enabled one.
+5. Click `Save Setup`.
 
 ## Build a Windows EXE
 
@@ -46,10 +46,14 @@ This local helper reads the currently detected PSN game from your hosted tracker
    bridge/dist/ps4-discord-bridge.exe
    ```
 
-4. Put a `.env` file in the same folder as the `.exe`.
+4. Run the `.exe`.
+5. A local setup page opens automatically.
+6. The bridge saves your settings to `config.json` next to the `.exe`.
 
 ## Behavior
 
+- Hosts a local setup UI at `http://127.0.0.1:3487`
+- Saves bridge settings to `config.json`
 - Polls your hosted site every `POLL_INTERVAL_MS` milliseconds
 - Reads `/api/state`
 - Supports HTTP Basic Auth when `SITE_PASSWORD` is set

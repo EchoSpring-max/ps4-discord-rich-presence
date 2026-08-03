@@ -5,3 +5,4 @@ npm-debug.log*
 pnpm-debug.log*
 bridge/.env
 bridge/dist/
+bridge/config.json

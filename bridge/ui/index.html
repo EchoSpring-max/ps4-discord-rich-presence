@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PS4 Discord Bridge</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <div>
+          <p class="eyebrow">Bridge Setup</p>
+          <h1>PS4 Discord Bridge</h1>
+          <p class="lede">Point the bridge at your Railway tracker, paste your Discord application Client ID, and test everything from one page.</p>
+        </div>
+        <div class="status-grid">
+          <div class="status-pill"><span>Discord</span><strong id="rpcStatus">Disconnected</strong></div>
+          <div class="status-pill"><span>Tracker</span><strong id="trackerStatus">Unknown</strong></div>
+          <div class="status-pill"><span>Current Game</span><strong id="activeTitle">None</strong></div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <section class="card">
+          <p class="eyebrow">Connection</p>
+          <h2>Easy Setup</h2>
+          <form id="configForm" class="form-grid">
+            <label class="full">
+              <span>Tracker site URL</span>
+              <input id="siteUrl" type="url" placeholder="https://ps4discord.up.railway.app" required />
+            </label>
+
+            <label>
+              <span>Site username</span>
+              <input id="siteUsername" type="text" placeholder="admin" />
+            </label>
+
+            <label>
+              <span>Site password</span>
+              <input id="sitePassword" type="password" placeholder="Only if your site is protected" />
+            </label>
+
+            <label class="full">
+              <span>Discord application Client ID</span>
+              <input id="clientId" type="text" placeholder="123456789012345678" required />
+            </label>
+
+            <label>
+              <span>Poll every (ms)</span>
+              <input id="pollIntervalMs" type="number" min="5000" step="1000" />
+            </label>
+
+            <label>
+              <span>Auto-open this page</span>
+              <select id="autoOpenUi">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Large image key</span>
+              <input id="largeImageKey" type="text" placeholder="Optional Discord asset key" />
+            </label>
+
+            <label>
+              <span>Large image text</span>
+              <input id="largeImageText" type="text" placeholder="PS4 Tracker" />
+            </label>
+
+            <label>
+              <span>Small image key</span>
+              <input id="smallImageKey" type="text" placeholder="Optional Discord asset key" />
+            </label>
+
+            <label>
+              <span>Small image text</span>
+              <input id="smallImageText" type="text" placeholder="On PS4" />
+            </label>
+
+            <div class="actions full">
+              <button type="submit" class="primary">Save Setup</button>
+              <button id="testButton" type="button" class="secondary">Test Now</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card">
+          <p class="eyebrow">Live Info</p>
+          <h2>Status</h2>
+          <div class="info-list">
+            <div><span>Last sync</span><strong id="lastSyncAt">Not yet</strong></div>
+            <div><span>Last error</span><strong id="lastError">None</strong></div>
+            <div><span>Platform</span><strong id="activePlatform">None</strong></div>
+            <div><span>UI URL</span><strong id="uiUrl">-</strong></div>
+          </div>
+          <div class="callout">
+            The bridge must run on a PC where the Discord desktop app is open. Your hosted Railway site stays in the cloud; this helper only mirrors the current game into Discord Rich Presence locally.
+          </div>
+        </section>
+      </section>
+
+      <p id="toast" class="toast"></p>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

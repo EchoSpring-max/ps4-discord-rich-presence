@@ -11,6 +11,7 @@ A Railway-ready Node web app for tracking your PS4 library, syncing your played 
 - Detects the PS4 game you are currently playing from PSN presence data
 - Supports background polling so the hosted app can keep checking without your PC staying on
 - Includes an optional local desktop bridge for Discord Rich Presence
+- The bridge now includes its own local setup GUI, so you do not need to hand-edit config files
 
 ## Local run
 
@@ -50,20 +51,14 @@ Discord Rich Presence still has to be published from a machine running the Disco
    pnpm install
    ```
 
-6. Copy `.env.example` to `.env` and set:
-
-   ```powershell
-   SITE_URL=https://your-railway-site.up.railway.app
-   DISCORD_CLIENT_ID=your_discord_application_id
-   SITE_USERNAME=admin
-   SITE_PASSWORD=your_site_password
-   ```
-
-7. Start the bridge:
+6. Start the bridge:
 
    ```powershell
    pnpm start
    ```
+
+7. Your browser opens a local setup page automatically.
+8. Paste your Railway URL, Discord application Client ID, and site password if enabled.
 
 The bridge polls `/api/state` on your hosted site and updates Discord when the active PSN game changes.
 
