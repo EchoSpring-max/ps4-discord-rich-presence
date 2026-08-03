@@ -23,10 +23,12 @@
       "output": "dist"
     },
     "files": [
+      "assets/**/*",
       "src/**/*",
       "package.json"
     ],
     "win": {
+      "icon": "assets/app-icon.ico",
       "target": [
         {
           "target": "portable",
