@@ -5,6 +5,7 @@ class DiscordPresenceManager {
     this.client = null;
     this.clientId = "";
     this.connected = false;
+    this.lastActivitySignature = "";
   }
 
   async ensureClient(clientId) {
@@ -76,6 +77,24 @@ class DiscordPresenceManager {
     return activity;
   }
 
+  buildSignature(settings, presence) {
+    if (!presence || !presence.titleName) {
+      return "";
+    }
+
+    return JSON.stringify({
+      clientId: settings.clientId || "",
+      titleId: presence.titleId || "",
+      titleName: presence.titleName || "",
+      startedAt: presence.startedAt || presence.checkedAt || "",
+      state: "On PS4",
+      largeImageKey: settings.largeImageKey || "",
+      largeImageText: settings.largeImageText || "",
+      smallImageKey: settings.smallImageKey || "",
+      smallImageText: settings.smallImageText || "",
+    });
+  }
+
   async syncPresence(settings, presence) {
     if (!settings.autoSync) {
       await this.clearPresence();
@@ -89,16 +108,24 @@ class DiscordPresenceManager {
     }
 
     const client = await this.ensureClient(settings.clientId);
+    const signature = this.buildSignature(settings, presence);
+    if (signature && signature === this.lastActivitySignature) {
+      return false;
+    }
+
     await client.user?.setActivity(activity);
+    this.lastActivitySignature = signature;
     return true;
   }
 
   async clearPresence() {
     if (!this.client || !this.connected) {
+      this.lastActivitySignature = "";
       return;
     }
 
     await this.client.user?.clearActivity();
+    this.lastActivitySignature = "";
   }
 
   async disconnect() {
@@ -113,6 +140,7 @@ class DiscordPresenceManager {
     } finally {
       this.client = null;
       this.connected = false;
+      this.lastActivitySignature = "";
     }
   }
 }
