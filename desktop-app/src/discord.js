@@ -42,13 +42,14 @@ class DiscordPresenceManager {
       return null;
     }
 
-    const checkedAt = presence.checkedAt ? new Date(presence.checkedAt) : new Date();
+    const startedAt = presence.startedAt || presence.checkedAt;
+    const startTimestamp = startedAt ? new Date(startedAt) : new Date();
     const activity = {
       name: presence.titleName,
       details: presence.titleName,
       state: "On PS4",
       type: 0,
-      startTimestamp: checkedAt,
+      startTimestamp,
       buttons: [
         {
           label: "PlayStation",

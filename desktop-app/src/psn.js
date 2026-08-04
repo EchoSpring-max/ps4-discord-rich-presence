@@ -234,6 +234,13 @@ class PsnManager {
       response.basicPresence.gameTitleInfoList[0] ||
       null;
     const checkedAt = new Date().toISOString();
+    const previousPresence = state.psnPresence || null;
+    const sameTitle =
+      currentGame &&
+      previousPresence &&
+      previousPresence.titleId &&
+      previousPresence.titleId === currentGame.npTitleId;
+    const startedAt = sameTitle ? previousPresence.startedAt || previousPresence.checkedAt || checkedAt : checkedAt;
 
     let games = state.games;
     if (currentGame) {
@@ -273,6 +280,7 @@ class PsnManager {
           response.basicPresence.primaryPlatformInfo?.platform ||
           response.basicPresence.platform ||
           "PS4",
+        startedAt: currentGame ? startedAt : "",
         titleId: currentGame?.npTitleId || "",
         titleName: currentGame?.titleName || "",
         imageUrl: currentGame?.npTitleIconUrl || currentGame?.conceptIconUrl || "",
